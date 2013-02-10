@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 
 
 public class CalendarTest {
+    private GoogleCalendar googleCalendarUpdater;
     
     public CalendarTest() {
     }
@@ -26,6 +27,7 @@ public class CalendarTest {
     
     @Before
     public void setUp() {
+        googleCalendarUpdater = new GoogleCalendar();
     }
     
     @After
@@ -36,26 +38,23 @@ public class CalendarTest {
     public void testSetUserName() {
         System.out.println("setUserName");
         String userName = "foobar";
-        GoogleCalendar instance = new GoogleCalendar();
-        instance.setUserName(userName);
-        // TODO review the generated test code and remove the default call to fail.
-        assertEquals(userName, instance.getUserName());
+        
+        googleCalendarUpdater.setUserName(userName);
+        assertEquals(userName, googleCalendarUpdater.getUserName());
     }
 
     @Test
     public void testSetPassword() {
         System.out.println("setPassword");
         String password = "";
-        GoogleCalendar instance = new GoogleCalendar();
-        instance.setPassword(password);
+        googleCalendarUpdater.setPassword(password);
     }
 
     @Test
     public void testComputeAge() {
         System.out.println("computeAge");
         int birthYear = 2007;
-        GoogleCalendar instance = new GoogleCalendar();
-        assertEquals(Calendar.getInstance().get(Calendar.YEAR) - birthYear, instance.computeAge(birthYear));
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR) - birthYear, googleCalendarUpdater.computeAge(birthYear));
     }
     
     @Test
@@ -67,9 +66,7 @@ public class CalendarTest {
         entry.setTitle(new PlainTextConstruct("35, foo bar, " + birthYear));
         entry.setContent(new PlainTextConstruct("test entry for updating current age"));
         
-        GoogleCalendar instance = new GoogleCalendar();
-        instance.updateBirthdayEntry(entry);
-        System.out.println(entry);
+        googleCalendarUpdater.updateBirthdayEntry(entry);
         assertEquals(age + ", foo bar, " + birthYear, entry.getTitle().getPlainText());
     }
     
@@ -82,9 +79,24 @@ public class CalendarTest {
         entry.setTitle(new PlainTextConstruct("foo bar, " + birthYear));
         entry.setContent(new PlainTextConstruct("test entry for updating current age"));
         
-        GoogleCalendar instance = new GoogleCalendar();
-        instance.updateBirthdayEntry(entry);
-        System.out.println(entry);
+        googleCalendarUpdater.updateBirthdayEntry(entry);
         assertEquals(age + ", foo bar, " + birthYear, entry.getTitle().getPlainText());
     }
+    
+    @Test
+    public void testUpdateCalendarWithNoBirthYearEntry() {
+        System.out.println("update calendar with no year entry");
+        CalendarEntry entry = new CalendarEntry();
+        String origTitle = "1, foo bar";
+        entry.setTitle(new PlainTextConstruct(origTitle));
+        entry.setContent(new PlainTextConstruct("test entry for updating current age"));
+        
+        googleCalendarUpdater.updateBirthdayEntry(entry);
+        assertEquals(origTitle, entry.getTitle().getPlainText());
+    }
+    
+    public void testSetFeedUrl() {
+        googleCalendarUpdater.setFeedUrl("foobar/public/basic ");
+        assertEquals("foobar/private/full", googleCalendarUpdater.getFeedUrl());
+    }    
 }

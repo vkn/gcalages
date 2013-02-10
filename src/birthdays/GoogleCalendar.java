@@ -109,12 +109,9 @@ public class GoogleCalendar {
     private List<CalendarEntry> _getCalendarEntries(CalendarService service) {
         String url = "http://www.google.com/calendar/feeds/" + userName + "@gmail.com/private/full";
         try {
-            System.out.println("Entered URL: " +  feedUrl);
             URL metafeedUrl = new URL(!feedUrl.isEmpty() ? feedUrl : url);
             System.out.println("Using URL: " + metafeedUrl.toString());
-            System.out.println("Getting Calendar entries...\n");
             CalendarFeed feed = service.getFeed(metafeedUrl, CalendarFeed.class);
-            System.out.println(feed.getTitle().getPlainText());
             return feed.getEntries();
         } catch (AuthenticationException e) {
             LOG.log(Level.SEVERE, "Cannot Login with {0} {1}", new Object[]{userName, e.getMessage()});
@@ -127,9 +124,6 @@ public class GoogleCalendar {
     }
     
     public void updateBirthdayEntry(CalendarEntry entry) {
-        
-        System.out.println("\n\n");
-        //System.out.println("\t entry kind  " + entry());
         String entryText = entry.getTitle().getPlainText();
         Pattern birthYearPattern = Pattern.compile("([\\d]{4})$");
         Matcher birthYearMatcher = birthYearPattern.matcher(entryText);
